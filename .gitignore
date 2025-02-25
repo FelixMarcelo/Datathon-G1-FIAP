@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environments
+.venv/
+venv/
+.env
+
+# Poetry
+# poetry.lock
+
+# FastAPI / Logs
+logs/
+*.log
+
+# Docker
+docker-compose.override.yml
+.dockerignore
+
+# Databases
+*.sqlite3
+*.db
+*.db-journal
+
+# VSCode & IDEs
+.vscode/
+.idea/
+*.iml
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# macOS & Windows
+.DS_Store
+Thumbs.db
+
+# resources
+app/resources
+*gz
