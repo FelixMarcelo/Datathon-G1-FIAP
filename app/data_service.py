@@ -31,8 +31,8 @@ def get_dependencies():
 
 def get_itens():
     """Load all item CSV files from the itens directory."""
-    itens_path = BASE_DIR / "model/itens"
-    lista_itens_csv = glob.glob(str(itens_path / "*.csv"))
+    itens_path = BASE_DIR / "model"
+    lista_itens_csv = glob.glob(str(itens_path / "itens-parte*.csv"))
 
     if not lista_itens_csv:
         print("⚠️ Nenhum arquivo CSV encontrado em", itens_path)
