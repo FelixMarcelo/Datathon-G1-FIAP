@@ -1,18 +1,17 @@
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 from .dtos import Usuario
 from . import recomendation_service
 from contextlib import asynccontextmanager
 from . import data_service
 
 
-@asynccontextmanager
-async def get_dependencies(app: FastAPI):
-    data_service.get_dependencies()
-    yield
+data_service.get_dependencies()
 
-app = FastAPI(lifespan=get_dependencies)
+app = FastAPI()
 
 
 @app.post("/recomendar")
 def recomendar(usuario: Usuario):    
-    return recomendation_service.recomendar(usuario, n_recomendations=10)
+    res = recomendation_service.recomendar(usuario, n_recomendations=10)
+    return JSONResponse(content=res)
