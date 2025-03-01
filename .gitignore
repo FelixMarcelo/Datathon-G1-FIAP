@@ -4,7 +4,8 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-
+*__init__.py
+*user_train.csv
 # Virtual Environments
 .venv/
 venv/

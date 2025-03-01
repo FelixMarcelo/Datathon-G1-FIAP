@@ -4,5 +4,4 @@ from typing import List
 
 class Usuario(BaseModel):
     usuario_id: str
-    ultimas_noticias: List[str]
     
