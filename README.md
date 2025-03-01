@@ -131,10 +131,12 @@ Gravou-se como comprovação da funcionalidade.
 
 ## Comandos: 
 ## IMPORTANTE: 
-Para que a aplicação funcione corretamente, após clonar o repositório, faça o download desses dois arquivos e cole-os no diretório: app/model
+Para que a aplicação funcione corretamente, após clonar o repositório, faça o download desses quatro arquivos e cole-os no diretório: app/model
 
 https://drive.google.com/file/d/1tL02AJ_whHud-KrSFBku5MVw_G6nlK12/view?usp=gmail
 https://drive.google.com/file/d/18lDf6CKruX0keH8o-dt3BGgGJi8sj0Ew/view?usp=gmail
+https://drive.google.com/file/d/1Fhql_r8pO39UWX1WvQ8HGNKKx0Trm7u1/view?usp=gmail
+https://drive.google.com/file/d/1XYRtyPtmO3sRZoatHsMBnT_4jyhoiXs6/view?usp=gmail
 
 Após realizada esta etapa, rode os comandos abaixo
 
