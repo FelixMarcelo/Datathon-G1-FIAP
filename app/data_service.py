@@ -31,12 +31,12 @@ def get_dependencies():
 
 def get_itens():
     """Load all item CSV files from the itens directory."""
-    itens_path = BASE_DIR / "resources/itens/itens"
+    itens_path = BASE_DIR / "model/itens"
     lista_itens_csv = glob.glob(str(itens_path / "*.csv"))
 
     if not lista_itens_csv:
         print("⚠️ Nenhum arquivo CSV encontrado em", itens_path)
-        return pd.DataFrame()  # Return empty DataFrame to avoid errors
+        return pd.DataFrame()
 
     print(f"📂 {len(lista_itens_csv)} arquivos CSV encontrados para itens.")
     return pd.concat([pd.read_csv(file) for file in lista_itens_csv], ignore_index=True)
@@ -44,7 +44,7 @@ def get_itens():
 
 def get_users():
     """Load user data from CSV."""
-    users_path = BASE_DIR / "resources/files/treino/treino_parte1.csv"
+    users_path = BASE_DIR / "model/treino_parte1.csv"
     
     if not users_path.exists():
         raise FileNotFoundError(f"🚨 Arquivo não encontrado: {users_path}")

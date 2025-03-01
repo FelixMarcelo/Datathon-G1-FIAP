@@ -4,17 +4,42 @@
 
 ### Construção do modelo
 
+## Sobre a estratégia: 
+Por se tratar de um canal de notícias, optamos por focar principalmente na **data**, no **conteúdo** das notícias e no **perfil** de leitura do usuário. 
+
+A ideia é ser capaz de identificar clusters por meio do conteúdo das notícias (título, descrição e conteúdo) e definir um "score" de engajamento do usuário dado o seu histório de leitura. Este dois fatores, combinados, resultam no perfil do usuário e é através deste perfil que serão feitas as recomendações. 
+
+### Scores de Engajamento
+Para definição dos scores de engajamento, foram utilizadas as seguintes colunas: 
+
+**timestampHistory, numberOfClicksHistory, timeOnPageHistory, scrollPercentageHistory e pageVisitsCountHistory.** 
+
+Foram dados pesos a cada uma delas e o cálculo foi baseado na fórmula de padronização das variáveis, da seguinte forma:
+
+```python
+timestampHistory_score = timestampHistory[n_item] / timestampHistory_max
+numberOfClicksHistory_score = (numberOfClicksHistory[n_item] - numberOfClicksHistory_mean) / numberOfClicksHistory_std
+timeOnPageHistory_score = (timeOnPageHistory[n_item] - timeOnPageHistory_mean) / timeOnPageHistory_std
+scrollPercentageHistory_score = (scrollPercentageHistory[n_item] - scrollPercentageHistory_mean) / scrollPercentageHistory_std
+pageVisitsCountHistory_score = (pageVisitsCountHistory[n_item] - pageVisitsCountHistory_mean) / pageVisitsCountHistory_std
+
+final_item_score = timestampHistory_score * 1.3 + numberOfClicksHistory_score * 1 + timeOnPageHistory_score * 1 + scrollPercentageHistory_score * 1.2 + pageVisitsCountHistory_score * 1
+```
+
+As variáveis de tempo e porcentagem de leitura receberam pesos maiores, dada a natureza do negócio. 
+
+Para cada notícia no histórico do usuário, o "score" final de engajamento é definido então como a soma dessas variáveis.
+
+
 **Como lidar com o Cold Start?** 
 
-Usuários ou itens com pouca informação receberão como recomendação as 10 primeiras notícias de um ranking que considera data (recência) e número de clicks como critério de classificação.
+Usuários ou itens com pouca ou nenhuma informação receberão como recomendação as 10 primeiras notícias de um ranking que considera data (recência) como critério.
 
 **Item 1: Treinamento**
 
-Vetorizar o título das últimas 10 notícias que o usuário clicou e classificá-los entre N grupos. 
+A vetorização dos títulos, descrição e conteúdo da matéria será feita utilizando a classe **TfidfVectorizer** do **sklearn**.
 
-A vetorização dos títulos será feita utilizando a classe **TfidfVectorizer** do **sklearn**.
-
-A clusterização será feita utilizando algorítmo **KMeans**. 
+Utilizou-se a base de itens para treinar o modelo com o algotítmo **Kmeans** e **clusterizar** as notícias em 20 grupos a partir da proximidade do seu conteúdo.
 
 Exemplo de uso:
 
@@ -70,35 +95,44 @@ user_cluster = classify_user(new_user_movies)
 print(f"New User is classified into Cluster {user_cluster}")
 ```
 
-A partir da classificação do usuário, recomendar as 10 notícias mais bem classificadas do seu cluster, considerando novamente os critérios de recência e número de cliques, excluindo dessa lista as notícias já lidas pelo usuário.
+Após realizado o treinamento do modelo, foi construída uma pipline de tratamento dos dados de histórico do usuário calculando o seu score de engajamento para cada uma das notícias que já consumiu. 
 
-Obs: Se não estivermos satisfeitos com o desempenho do modelo neste ponto, podemos utilizar esta nova base construida com o KMeans para treinar um outro algorítmo de classificação.
+Essa base foi chamada então de perfil do usuário e é a partir dela que são feitas as recomendações. 
 
+Caso o usuário tenha um histórico na base de dados do G1, o seu perfil será calculado e as recomendações serão feitas preferencialmente a partir dele. Caso este histórico não seja suficiente para a geração de 10 recomendações, os itens faltantes serão indicados considerando a data de lançamento.
 **Item 2: Salvamento do modelo**
 
-Utilizar o pickle para salvar o modelo.
+Utilizou-se a biblioteca joblib para salvar tanto o **modelo** quanto o **vetorizador**.
 
-### Item 4: Criação da API para previsões
+### Item 3: Criação da API para previsões
 
-Utilizar o FastAPI como framework para construir a API REST.
+Utilizou-se a biblioteca **FastAPI** como framework para construir a API REST.
 
 Endpoints:
 
 /recomendar:
 
-body:
+body da requisição POST:
 ```json
 {
-    "id_usuario": str,
-    "lista_ultimas_noticias": list[str]
+    "id_usuario": str
 }
 ```
 
 ### Item 4: Empacotamento com Docker
+Utilizamos um Dockerfile para empacotar a aplicação e torná-la produtiva
 
 ### Item 5: Testes e validação da API
+Gravou-se como comprovação da funcionalidade.
 
-### Dúvidas:
+# Como rodar a aplicação? 
 
-Precisamos nos preocupar com a pipeline de dados e retreino do modelo? Ex. Rotinas para inclusão de novas notícias e ações dos usuários. Rotina para retreino do modelo considerando essas novas informações.
+## Pré requisito: Docker
+
+## Comandos: 
+**A partir da raiz do projeto:**
+```
+docker build -t recomendation-system-g1-fiap .
+docker run -p 8000:8000 --name datathon-g1 recomendation-system-g1-fiap
+```
 
